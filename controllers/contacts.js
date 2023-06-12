@@ -6,7 +6,6 @@ const {
   updateContact,
 } = require("../models/contacts");
 const HttpError = require("../utils/HttpError");
-const validationSchema = require("../utils/validationSchema");
 
 const getAllContacts = async (req, res, next) => {
   try {
