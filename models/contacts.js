@@ -1,19 +1,92 @@
-// const fs = require('fs/promises')
+const { readFile, writeFile } = require("fs").promises; // const fs = require('fs/promises')
 
-const listContacts = async () => {}
+const { nanoid } = require("nanoid");
+const path = require("path");
 
-const getContactById = async (contactId) => {}
+const contactsPath = path.join(__dirname, "contacts.json");
 
-const removeContact = async (contactId) => {}
+const listContacts = async () => {
+  try {
+    const contacts = await readFile(contactsPath);
 
-const addContact = async (body) => {}
+    return JSON.parse(contacts);
+  } catch (err) {
+    console.log(`Something wrong ${err.message}`);
+  }
+};
 
-const updateContact = async (contactId, body) => {}
+const getById = async (contactId) => {
+  try {
+    const id = String(contactId);
+    const allContacts = await listContacts();
+
+    const contact = allContacts.find((el) => el.id === id);
+
+    return contact || null;
+  } catch (err) {
+    console.log(`Something wrong ${err.message}`);
+  }
+};
+
+const removeContact = async (contactId) => {
+  try {
+    const id = String(contactId);
+    const allContacts = await listContacts();
+
+    const index = allContacts.findIndex((el) => el.id === id);
+
+    if (index === -1) {
+      return null;
+    }
+
+    const [contactToDelete] = allContacts.splice(index, 1);
+
+    await writeFile(contactsPath, JSON.stringify(allContacts));
+
+    return contactToDelete;
+  } catch (err) {
+    console.log(`Something wrong ${err.message}`);
+  }
+};
+
+const addContact = async (body) => {
+  try {
+    const allContacts = await listContacts();
+    const newContact = { id: nanoid(), ...body };
+
+    allContacts.push(newContact);
+
+    await writeFile(contactsPath, JSON.stringify(allContacts));
+
+    return newContact;
+  } catch (err) {
+    console.log(`Something wrong ${err.message}`);
+  }
+};
+
+const updateContact = async (contactId, body) => {
+  try {
+    const id = String(contactId);
+    const allContacts = await listContacts();
+    const index = allContacts.findIndex((el) => el.id === id);
+
+    if (index === -1) {
+      return null;
+    }
+
+    allContacts.splice(index, 1, { id: contactId, ...body });
+    await writeFile(contactsPath, JSON.stringify(allContacts));
+
+    return allContacts[index];
+  } catch (err) {
+    console.log(`Something wrong ${err.message}`);
+  }
+};
 
 module.exports = {
   listContacts,
-  getContactById,
+  getById,
   removeContact,
   addContact,
   updateContact,
-}
+};
