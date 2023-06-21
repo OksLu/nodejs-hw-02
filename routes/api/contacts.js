@@ -6,7 +6,7 @@ const {
   deleteContactById,
   updateContactById,
   updateFavorite,
-} = require("../../controllers/contacts");
+} = require("../../controllers");
 
 const validateBody = require("../../middlewares/validateBody");
 const {
