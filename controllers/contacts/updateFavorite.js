@@ -7,7 +7,7 @@ const updateFavorite = async (req, res) => {
     new: true,
   });
   if (!req.body) {
-    return res.status(400).json({ message: "missing field favorite" });
+    throw HttpError(400, "Missing field favorite");
   }
   if (!data) {
     throw HttpError(404, "Not found");
