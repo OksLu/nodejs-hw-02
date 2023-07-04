@@ -5,7 +5,7 @@ const {
   authValidationSchema,
   subscriptionValidationSchema,
 } = require("../../utils");
-const authMiddleware = require("../../middlewares/authMiddleware");
+const { authMiddleware, upload } = require("../../middlewares");
 const auth = require("../../controllers/auth");
 
 const router = Router();
@@ -19,6 +19,12 @@ router.patch(
   authMiddleware,
   validateBody(subscriptionValidationSchema),
   user.updateSubscription
+);
+router.patch(
+  "/avatars",
+  authMiddleware,
+  upload.single("avatar"),
+  user.updateAvatar
 );
 
 module.exports = router;
