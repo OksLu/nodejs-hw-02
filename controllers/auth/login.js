@@ -15,9 +15,12 @@ const login = async (req, res, next) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    throw new HttpError(401, "Invalid email or password");
+    throw HttpError(401, "Invalid email or password");
   }
 
+  if (!user.verify) {
+    throw HttpError(401, "Email not verified");
+  }
   const passwordCompare = await bcrypt.compare(password, user.password);
 
   if (!passwordCompare) {
@@ -28,8 +31,14 @@ const login = async (req, res, next) => {
 
   await User.findByIdAndUpdate(user._id, { token });
 
-  res.status(200).json({ token });
-  next();
+  res.status(200).json({
+    token,
+    user: {
+      email: user.email,
+      subscription: user.subscription,
+      avatar: user.avatarUrl,
+    },
+  });
 };
 
 module.exports = login;

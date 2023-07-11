@@ -1,24 +1,25 @@
 const { Router } = require("express");
-const { user } = require("../../controllers");
+const { auth, user } = require("../../controllers");
 const validateBody = require("../../middlewares/validateBody");
 const {
   authValidationSchema,
   subscriptionValidationSchema,
 } = require("../../utils");
 const { authMiddleware, upload } = require("../../middlewares");
-const auth = require("../../controllers/auth");
 
 const router = Router();
 
-router.post("/register", validateBody(authValidationSchema), user.signup);
-router.post("/login", validateBody(authValidationSchema), user.login);
-router.post("/logout", authMiddleware, user.logout);
-router.get("/current", authMiddleware, auth.getCurrent);
+router.post("/register", validateBody(authValidationSchema), auth.signup);
+router.get("/verify/:verificationCode", auth.verification);
+router.post("/verify", auth.reverification);
+router.post("/login", validateBody(authValidationSchema), auth.login);
+router.post("/logout", authMiddleware, auth.logout);
+router.get("/current", authMiddleware, user.getCurrent);
 router.patch(
   "/subscription",
   authMiddleware,
   validateBody(subscriptionValidationSchema),
-  user.updateSubscription
+  user.subscription
 );
 router.patch(
   "/avatars",

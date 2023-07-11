@@ -7,6 +7,7 @@ const {
 const subscriptionValidationSchema = require("./subscriptionValidationSchema");
 const handleMongooseError = require("./handleMongooseError");
 const HttpError = require("./HttpError");
+const Email = require("./emailService");
 
 module.exports = {
   ctrlWrapper,
@@ -16,4 +17,5 @@ module.exports = {
   favoriteValidationSchema,
   handleMongooseError,
   HttpError,
+  Email,
 };
